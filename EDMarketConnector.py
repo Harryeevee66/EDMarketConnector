@@ -1101,7 +1101,6 @@ executable: {sys.executable}
 sys.path: {sys.path}'''
                  )
 
-
     # We prefer a UTF-8 encoding gets set, but older Windows versions have
     # issues with this.  From Windows 10 1903 onwards we can rely on the
     # manifest ActiveCodePage to set this, but that is silently ignored on
@@ -1132,7 +1131,7 @@ sys.path: {sys.path}'''
 
         except locale.Error as e:
             logger.error(f"Could not set LC_ALL to ({locale_startup[0]}, 'UTF_8')", exc_info=e)
-            
+
         else:
             log_locale('After switching to UTF-8 encoding (same language)')
 
@@ -1166,9 +1165,16 @@ sys.path: {sys.path}'''
         ui_scale = 100
         config.set('ui_scale', ui_scale)
     theme.default_ui_scale = root.tk.call('tk', 'scaling')
-    logger.trace(f'Default tk scaling = {theme.default_ui_scale}')
     theme.startup_ui_scale = ui_scale
-    root.tk.call('tk', 'scaling', theme.default_ui_scale * float(ui_scale) / 100.0)
+    scale_factor = float(ui_scale) / 100.0
+    new_scale = theme.default_ui_scale * scale_factor
+    logger.debug(f'''Scaling:
+default_ui_scale: {theme.default_ui_scale}
+scale_factor: {scale_factor}
+new_scale to set: {new_scale}'''
+                 )
+    root.tk.call('tk', 'scaling', new_scale)
+    logger.debug(f'Scaling: tk-scaling after changing: {root.tk.call("tk", "scaling")}')
     app = AppWindow(root)
 
     def messagebox_not_py3():
