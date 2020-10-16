@@ -100,19 +100,27 @@ class Translations(object):
     def contents(self, lang, plugin_path=None):
         assert lang in self.available()
         translations = {}
+
         h = self.file(lang, plugin_path)
         if not h:
             return {}
+
         else:
             for line in h:
                 if line.strip():
                     match = Translations.TRANS_RE.match(line)
+
                     if match:
                         translations[match.group(1).replace(r'\"', u'"')] = match.group(2).replace(r'\"', u'"').replace(u'{CR}', u'\n')
+
                     elif __debug__ and not Translations.COMMENT_RE.match(line):
                         print('Bad translation: %s' % line.strip())
+
+            h.close()
+
         if translations.get(LANGUAGE_ID, LANGUAGE_ID) == LANGUAGE_ID:
             translations[LANGUAGE_ID] = str(lang)	# Replace language name with code if missing
+
         return translations
 
     def translate(self, x, context=None):
