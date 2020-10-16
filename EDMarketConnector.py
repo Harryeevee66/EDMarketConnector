@@ -413,7 +413,7 @@ class AppWindow(object):
 
         # update geometry
         if config.get('geometry'):
-            match = re.match('\+([\-\d]+)\+([\-\d]+)', config.get('geometry'))  # noqa: W605
+            match = re.match(r'\+([\-\d]+)\+([\-\d]+)', config.get('geometry'))
             if match:
                 if platform == 'darwin':
                     # http://core.tcl.tk/tk/tktview/c84f660833546b1b84e7
@@ -1317,7 +1317,10 @@ sys.path: {sys.path}'''
                 logger.exception(f"Could not set LC_ALL to ('{locale_startup[0]}', 'UTF_8')")
 
             except Exception:
-                logger.exception(f"Exception other than locale.Error on setting LC_ALL=('{locale_startup[0]}', 'UTF_8')")
+                logger.exception(
+                    "Exception other than locale."
+                    f"Error on setting LC_ALL=('{locale_startup[0]}', 'UTF_8')"
+                )
 
             else:
                 log_locale('After switching to UTF-8 encoding (same language)')
